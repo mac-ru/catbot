@@ -60,15 +60,15 @@ else
 	case "${MESSAGE}" in
 		##################
 		'/cat'|'\/cat'|'/cat@C0T_bot'|'\/cat@C0T_bot'*)
-                        catfile=`ls /home/mac/catbot-executables/catbot-files/Cats/ | shuf -n 1`
+                        catfile=$(find ./Cats/ -name "*.jpg" | shuf -n 1)
 			catfile2="/home/mac/catbot-executables/catbot-files/Cats/"${catfile}
 			send_action "${CHAT[ID]}" "upload_photo"
-			echo $catfile2 to "${CHAT[USERNAME]}"
+			echo "${catfile2}" to "${CHAT[USERNAME]}"
 			send_file "${CHAT[ID]}" "${catfile2}"
 		;;
 		'/t'*)
-			TEMP=`pwd`
-			send_normal_message "${CHAT[ID]}" "${TEMP}"
+			#TEMP=`pwd`
+			#send_normal_message "${CHAT[ID]}" "${TEMP}"
 		;;
 	esac
      }
