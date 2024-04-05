@@ -12,7 +12,8 @@
 *.swp
 *.swo
 /logs/
-/JSON.sh/
+/JSON.sh*
 /data-bot-bash/
 /DIST/
 /STANDALONE/
+/catbot-files/*
