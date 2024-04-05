@@ -124,80 +124,14 @@ else
 	case "${MESSAGE}" in
 		##################
 		# example commands, replace them by your own
-		'/_dice_re'*) # dice from user received
-			sleep 5
-			local gameresult="*Congratulation ${USER[FIRST_NAME]} ${USER[LAST_NAME]}* you got *${MESSAGE[RESULT]} Points*."
-			[ -z "${FORWARD[UID]}" ] && send_markdownv2_message "${CHAT[ID]}" "${gameresult}"
-			;;
-		'/game'*) # send random dice, edit list to fit your needs
-			send_dice "${CHAT[ID]}" ":$(printf "slot_machine\ngame_die\ndart\nbasketball\nsoccer\nslot_machine"|sort -R|shuf -n 1shuf -n 1):"
-			if [ "${BOTSENT[OK]}" = "true" ]; then
-				local gameresult="*Congratulation ${USER[FIRST_NAME]}* ${USER[LAST_NAME]} you got *${BOTSENT[RESULT]} Points*."
-				sleep 5
-				case "${BOTSENT[RESULT]}" in
-				  1)	gameresult="*Sorry* only *one Point* ...";;
-				  2)	gameresult="*Hey*, 2 Points are *more then one!*";;
-				  5|6)	[[ "${BOTSENT[EMOJI]}" =~ fb0$ ]] || gameresult="*Super! ${BOTSENT[RESULT]} Points!*";;
-				  6*)	gameresult="*JACKPOT! ${BOTSENT[RESULT]} Points!*";;
-				esac
-				send_markdownv2_message "${CHAT[ID]}" "${gameresult}"
-			fi
-			;;
-		'/unpin'*) # unpin all messages if (bot)admin or allowed for user
-			 user_is_allowed "${USER[ID]}" "unpin" "${CHAT[ID]}" &&\
-				unpinall_chat_messages "${CHAT[ID]}"
-			;;
-		'/echo'*) # example echo command
-			send_normal_message "${CHAT[ID]}" "${MESSAGE}"
-			;;
-		'/button'*)# inline button, set CALLBACK=1 for processing callbacks
-			send_inline_buttons "${CHAT[ID]}" "Press Button ..." "   Button   |RANDOM-BUTTON"
-			;;
-		'/question'*) # start interactive questions
-			checkproc 
-			if [ "${res}" -gt 0 ] ; then
-				startproc "examples/question.sh" || send_normal_message "${CHAT[ID]}" "Can't start question."
-			else
-				send_normal_message "${CHAT[ID]}" "${MESSAGE} already running ..."
-			fi
+		'/cat'|'\/cat'|'/cat@C0T_bot'|'\/cat@C0T_bot'*)
+            catfile=`ls /home/mac/Catbot/Files/Cats/ | shuf -n 1`
+			catfile2="/home/mac/Catbot/Files/Cats/"$catfile
+			send_action "${CHAT[ID]}" "upload_photo"
+			echo $catfile2 to "${CHAT[USERNAME]}"
+			send_file "${CHAT[ID]}" "$catfile2"
 			;;
 
-		'/cancel'*) # cancel interactive command
-			checkproc
-			if [ "${res}" -gt 0 ] ;then 
-				killproc && send_normal_message "${CHAT[ID]}" "Command canceled."
-			else
-				send_normal_message "${CHAT[ID]}" "No command is currently running."
-			fi
-			;;
-		'/run_notify'*) # start notify background job
-			myback="notify"; checkback "${myback}"
-			if [ "${res}" -gt 0 ] ; then
-				background "examples/notify.sh 60" "${myback}" || send_normal_message "${CHAT[ID]}" "Can't start notify."
-			else
-				send_normal_message "${CHAT[ID]}" "Background command ${myback} already running ..."
-			fi
-			;;
-		'/stop_notify'*) # kill notify background job
-			myback="notify"; checkback "${myback}"
-			if [ "${res}" -eq 0 ] ; then
-				killback "${myback}"
-				send_normal_message "${CHAT[ID]}" "Background command ${myback} canceled."
-			else
-				send_normal_message "${CHAT[ID]}" "No background command ${myback} is currently running.."
-			fi
-			;;
-
-		##########
-		# command overwrite examples
-		'/info'*) # output date in front of regular info
-			send_normal_message "${CHAT[ID]}" "$(date)"
-			return 0
-			;;
-		'/kickme'*) # this will replace the /kickme command
-			send_markdownv2_mesage "${CHAT[ID]}" "This bot will *not* kick you!"
-			return 1
-			;;
 	esac
      }
 
